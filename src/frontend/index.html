@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Crawler</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="fas fa-spider"></i> Web Crawler</a>
+            <span class="navbar-text text-white ms-auto">Extract & Analyze Web Content</span>
+        </div>
+    </nav>
+
+    <div class="container-main">
+        <div class="header-section">
+            <h1><i class="fas fa-globe"></i> Web Crawler</h1>
+            <p>Enter a URL to extract and analyze its content, including title, description, topics, and images</p>
+        </div>
+
+        <div class="form-section">
+            <form onsubmit="crawlUrl(event)">
+                <div class="form-group">
+                    <label for="urlInput" class="form-label"><i class="fas fa-link"></i> Enter URL</label>
+                    <div class="input-group">
+                        <input type="url" class="form-control form-control-lg" id="urlInput" placeholder="https://example.com" required>
+                        <button class="btn btn-crawl" type="submit" id="crawlBtn">
+                            <i class="fas fa-search"></i> Crawl
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div id="loading">
+            <span class="loading-spinner"></span>
+            <i class="fas fa-spinner"></i> Crawling... Please wait.
+        </div>
+
+        <table class="table table-hover" id="resultTable">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-info-circle"></i> Property</th>
+                    <th><i class="fas fa-file-alt"></i> Value</th>
+                </tr>
+            </thead>
+            <tbody id="resultBody">
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let isExpanded = false;
+
+        async function crawlUrl(event) {
+            event.preventDefault();
+            const url = document.getElementById('urlInput').value;
+            const loading = document.getElementById('loading');
+            const resultTable = document.getElementById('resultTable');
+            const resultBody = document.getElementById('resultBody');
+            const crawlBtn = document.getElementById('crawlBtn');
+
+            loading.style.display = 'block';
+            resultTable.style.display = 'none';
+            crawlBtn.disabled = true;
+            isExpanded = false;
+
+            try {
+                const response = await fetch(`/crawl?url=${encodeURIComponent(url)}`);
+                const data = await response.json();
+                if (response.ok) {
+                    // Store body text globally
+                    window.currentBodyText = data.body;
+                    
+                    resultBody.innerHTML = `
+                        <tr>
+                            <td><span class="property-label">Title</span></td>
+                            <td><strong>${data.title}</strong></td>
+                        </tr>
+                        <tr>
+                            <td><span class="property-label">Description</span></td>
+                            <td>${data.description || '<em class="text-muted">No description</em>'}</td>
+                        </tr>
+                        <tr>
+                            <td><span class="property-label">Classification</span></td>
+                            <td><span class="badge bg-info">${data.classification}</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="property-label">Topics</span></td>
+                            <td class="topics">${data.topics.map(topic => `<span class="topic"><i class="fas fa-tag"></i> ${topic}</span>`).join('')}</td>
+                        </tr>
+                        <tr>
+                            <td><span class="property-label">Body Content</span></td>
+                            <td>
+                                <div class="body-text" id="bodyText">${data.body.substring(0, 500)}...</div>
+                                <button class="toggle-btn" id="toggleBodyBtn">
+                                    <i class="fas fa-expand"></i> Show Full Body
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    resultTable.style.display = 'table';
+                    
+                    // Add event listener after table is rendered
+                    setTimeout(() => {
+                        const toggleBtn = document.getElementById('toggleBodyBtn');
+                        if (toggleBtn) {
+                            toggleBtn.addEventListener('click', function() {
+                                toggleBody(window.currentBodyText);
+                            });
+                        }
+                    }, 0);
+                } else {
+                    alert(`Error: ${data.error}`);
+                }
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+            } finally {
+                loading.style.display = 'none';
+                crawlBtn.disabled = false;
+            }
+        }
+
+        function toggleBody(fullBody) {
+            const bodyText = document.getElementById('bodyText');
+            const btn = document.getElementById('toggleBodyBtn');
+            if (!isExpanded) {
+                bodyText.textContent = fullBody;
+                btn.innerHTML = '<i class="fas fa-compress"></i> Show Less';
+                isExpanded = true;
+            } else {
+                bodyText.textContent = fullBody.substring(0, 500) + '...';
+                btn.innerHTML = '<i class="fas fa-expand"></i> Show Full Body';
+                isExpanded = false;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "name": "brightedgeassesment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/backend/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/backend/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.6.0",
+    "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "@types/cheerio": "^0.22.35",
+    "axios": "^1.15.0",
+    "cheerio": "^1.2.0",
+    "express": "^5.2.1"
+  }
+}
