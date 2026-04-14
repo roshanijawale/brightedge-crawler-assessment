@@ -7,7 +7,6 @@ interface CrawlResult {
   body: string;
   classification: string;
   topics: string[];
-  images: Array<{ src: string; alt: string }>;
 }
 
 export async function crawl(url: string): Promise<CrawlResult> {
@@ -24,14 +23,14 @@ export async function crawl(url: string): Promise<CrawlResult> {
 
     const title = $('title').text().trim();
     const description = $('meta[name="description"]').attr('content')?.trim() || '';
-    
+
     // Extract body content from main areas first, then fallback to entire body
     let body = '';
     const mainAreas = $('main, article, [role="main"], .content, .main-content, .post-content');
     if (mainAreas.length > 0) {
       body = mainAreas.text().replace(/\s+/g, ' ').trim();
     }
-    
+
     // If main areas are empty, try paragraphs
     if (body.length < 100) {
       const paragraphs = $('p');
@@ -39,34 +38,12 @@ export async function crawl(url: string): Promise<CrawlResult> {
         body = paragraphs.text().replace(/\s+/g, ' ').trim();
       }
     }
-    
+
     // If still empty, get all body text
     if (body.length < 100) {
       body = $('body').text().replace(/\s+/g, ' ').trim();
     }
-    
-    // Add image information to body
-    const images: Array<{ src: string; alt: string }> = [];
-    const baseUrl = new URL(url);
-    $('img').each((i, elem) => {
-      let src = $(elem).attr('src')?.trim() || '';
-      const alt = $(elem).attr('alt')?.trim() || '';
-      if (src) {
-        try {
-          src = new URL(src, baseUrl.href).href;
-          images.push({ src, alt });
-        } catch (e) {
-          // Ignore invalid image URLs
-        }
-      }
-    });
-    
-    // Add image alt text to body for topic extraction
-    const imageAlts = images.map(img => `[Image: ${img.alt}]`).join(' ');
-    if (imageAlts.length > 0) {
-      body = body + ' ' + imageAlts;
-    }
-    
+
     // Limit body to first 50000 characters to avoid performance issues
     if (body.length > 50000) {
       body = body.substring(0, 50000);
@@ -97,7 +74,6 @@ export async function crawl(url: string): Promise<CrawlResult> {
       body,
       classification,
       topics,
-      images
     };
   } catch (error) {
     throw new Error(`Failed to crawl ${url}: ${error}`);
