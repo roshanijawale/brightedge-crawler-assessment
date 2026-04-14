@@ -1,11 +1,16 @@
 {
   "name": "brightedgeassesment",
   "version": "1.0.0",
-  "description": "",
-  "main": "dist/backend/server.js",
+  "description": "Web crawler as a GCP Cloud Function",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/backend/server.js",
+    "start": "node dist/index.js",
+    "dev": "gcloud functions deploy crawlFunction --runtime nodejs20 --trigger-http --allow-unauthenticated --source . --entry-point crawlFunction --quiet",
+    "deploy": "gcloud functions deploy crawlFunction --runtime nodejs20 --trigger-http --allow-unauthenticated --source . --entry-point crawlFunction",
+    "frontend:dev": "cd src/frontend && npm run dev",
+    "frontend:build": "cd src/frontend && npm run build",
+    "frontend:preview": "cd src/frontend && npm run preview",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -22,5 +27,8 @@
     "axios": "^1.15.0",
     "cheerio": "^1.2.0",
     "express": "^5.2.1"
+  },
+  "engines": {
+    "node": "20"
   }
 }
