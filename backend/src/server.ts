@@ -2,10 +2,11 @@
 import express from 'express';
 import { crawl } from './crawler.ts';
 
-const app = express();
+const expressApp = express();
+export const app = expressApp;
 const port = process.env.PORT || 8080;
 
-app.use((req, res, next) => {
+expressApp.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -24,7 +25,7 @@ app.get('/health', async (req, res) => {
   res.json({ status: 'ok' });
 });
 
-app.get('/crawl', async (req, res) => {
+expressApp.get('/crawl', async (req, res) => {
   const url = req.query.url as string;
   if (!url) {
     return res.status(400).json({ error: 'URL is required' });
@@ -37,6 +38,8 @@ app.get('/crawl', async (req, res) => {
   }
 });
 
-app.listen(Number(port), '0.0.0.0', () => {
-  console.log(`Server running on port ${port}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  expressApp.listen(Number(port), '0.0.0.0', () => {
+    console.log(`Local server running on port ${port}`);
+  });
+}
