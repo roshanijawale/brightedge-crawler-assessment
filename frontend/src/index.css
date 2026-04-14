@@ -1,9 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  color-scheme: dark;
-  background-color: #0f172a;
-  color: #e2e8f0;
+  color-scheme: light;
 }
 
 html, body, #root {
@@ -13,7 +11,8 @@ html, body, #root {
 body {
   margin: 0;
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: radial-gradient(circle at top, rgba(59, 130, 246, 0.18), transparent 30%), #0f172a;
+  background-color: #f8fafc;
+  color: #1e293b;
 }
 
 .app-shell {
@@ -29,29 +28,10 @@ body {
 .header-section {
   margin-bottom: 1.5rem;
   padding: 1.5rem;
-  color: #f8fafc;
 }
 
 .header-section h1 {
   font-size: clamp(2rem, 3vw, 3rem);
-}
-
-.form-section {
-  background: rgba(15, 23, 42, 0.95);
-}
-
-.input-group .form-control {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-.input-group .btn {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-.result-section {
-  background: rgba(15, 23, 42, 0.95);
 }
 
 .topic-badge {
@@ -64,7 +44,7 @@ body {
 .body-text {
   white-space: pre-wrap;
   word-break: break-word;
-  background: rgba(15, 23, 42, 0.9);
+  background: #f1f5f9;
   border-radius: 0.45rem;
   padding: 1rem;
   margin-bottom: 0.75rem;
@@ -73,9 +53,9 @@ body {
 }
 
 a {
-  color: #93c5fd;
+  color: #2563eb;
 }
 
 a:hover {
-  color: #bfdbfe;
+  color: #1d4ed8;
 }

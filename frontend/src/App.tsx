@@ -53,12 +53,12 @@ function App() {
 
   return (
     <div className="app-shell">
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid">
           <span className="navbar-brand">
             <i className="fas fa-spider" /> Web Crawler
           </span>
-          <span className="navbar-text text-white ms-auto">Extract & analyze web content</span>
+          <span className="navbar-text text-secondary ms-auto">Extract & analyze web content</span>
         </div>
       </nav>
 
