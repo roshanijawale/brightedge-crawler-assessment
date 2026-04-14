@@ -1,6 +1,6 @@
 import express from 'express';
 import path from 'path';
-import { crawl } from '../common/crawler.ts';
+import { crawl } from './crawler.ts';
 
 const app = express();
 const port = 3000;

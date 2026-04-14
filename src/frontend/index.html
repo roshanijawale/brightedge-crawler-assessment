@@ -95,6 +95,16 @@
                             <td class="topics">${data.topics.map(topic => `<span class="topic"><i class="fas fa-tag"></i> ${topic}</span>`).join('')}</td>
                         </tr>
                         <tr>
+                            <td><span class="property-label">Links</span></td>
+                            <td class="links">
+                                <ul style="list-style-type: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto;">
+                                    ${data.links && data.links.length > 0 ? 
+                                      data.links.map(link => `<li><a href="${link}" target="_blank"><i class="fas fa-external-link-alt" style="font-size: 0.8em; margin-right: 5px;"></i>${link}</a></li>`).join('') : 
+                                      '<em class="text-muted">No links found</em>'}
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
                             <td><span class="property-label">Body Content</span></td>
                             <td>
                                 <div class="body-text" id="bodyText">${data.body.substring(0, 500)}...</div>

@@ -7,6 +7,7 @@ interface CrawlResult {
   body: string;
   classification: string;
   topics: string[];
+  links: string[];
 }
 
 export async function crawl(url: string): Promise<CrawlResult> {
@@ -17,6 +18,23 @@ export async function crawl(url: string): Promise<CrawlResult> {
       }
     });
     const $ = cheerio.load(response.data);
+
+    // Extract links before removing navigation and other structural elements
+    const linksSet = new Set<string>();
+    $('a[href]').each((_, el) => {
+      const href = $(el).attr('href');
+      if (href && (href.startsWith('http://') || href.startsWith('https://'))) {
+        linksSet.add(href);
+      } else if (href && href.startsWith('/')) {
+        try {
+          const absoluteUrl = new URL(href, url).href;
+          linksSet.add(absoluteUrl);
+        } catch (e) {
+          // ignore
+        }
+      }
+    });
+    const links = Array.from(linksSet).slice(0, 50);
 
     // Remove scripts, styles, and other noisy elements to clean the text
     $('script, style, noscript, iframe, nav, footer, header, aside').remove();
@@ -68,12 +86,14 @@ export async function crawl(url: string): Promise<CrawlResult> {
     filteredWords.forEach(word => freq[word] = (freq[word] || 0) + 1);
     const topics = Object.entries(freq).sort(([, a], [, b]) => b - a).slice(0, 10).map(([k]) => k);
 
+
     return {
       title,
       description,
       body,
       classification,
       topics,
+      links,
     };
   } catch (error) {
     throw new Error(`Failed to crawl ${url}: ${error}`);
