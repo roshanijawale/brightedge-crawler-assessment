@@ -19,7 +19,7 @@ function App() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const displayedBody = useMemo(() => {
-    if (!result) return '';
+    if (!result || !result.body) return '';
     return isExpanded ? result.body : `${result.body.slice(0, 500)}${result.body.length > 500 ? '...' : ''}`;
   }, [isExpanded, result]);
 
@@ -146,7 +146,7 @@ function App() {
                     <td>Body Content</td>
                     <td>
                       <pre className="body-text">{displayedBody}</pre>
-                      {result.body.length > 500 && (
+                      {result.body && result.body.length > 500 && (
                         <button className="btn btn-outline-secondary btn-sm" type="button" onClick={() => setIsExpanded((prev) => !prev)}>
                           <i className={`fas ${isExpanded ? 'fa-compress' : 'fa-expand'}`} /> {isExpanded ? 'Show Less' : 'Show Full Body'}
                         </button>
